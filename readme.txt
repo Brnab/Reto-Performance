@@ -93,12 +93,7 @@ Proyecto/
 │   ├── conclusiones_ejercicio1.txt         ← Hallazgos y conclusiones Ejercicio 1
 │   └── Informe_Resultados_Ejercicio2.docx  ← Informe formal Ejercicio 2
 │
-├── docs/                                   ← Excluido del repo (.gitignore)
-│   └── output/
-│       └── qa/
-│           ├── performance-load-testing/   ← Artefactos QA (gherkin, risks, plan)
-│           ├── Informe_Resultados.md       ← Informe técnico (Ejercicio 2)
-│           └── Informe_Resultados.docx     ← Versión Word del informe
+├
 │
 ├── .gitignore                              ← Excluye .claude/, .github/, docs/
 └── readme.txt                              ← Este archivo
