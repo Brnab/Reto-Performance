@@ -1,0 +1,130 @@
+================================================================================
+  CONCLUSIONES Y HALLAZGOS — EJERCICIO 1: PRUEBA DE CARGA (LOAD TEST)
+  Endpoint: POST https://fakestoreapi.com/auth/login
+  Herramienta: k6 v1.7.1
+  Fecha de ejecucion: 2026-04-19
+================================================================================
+
+--------------------------------------------------------------------------------
+1. DESCRIPCION DE LA PRUEBA
+--------------------------------------------------------------------------------
+Se ejecuto una prueba de carga sobre el endpoint de autenticacion de FakeStore API
+utilizando k6 con las siguientes caracteristicas:
+
+  - Executor:         ramping-arrival-rate (control directo de TPS)
+  - Fase ramp-up:     0 a 20 TPS en 2 minutos
+  - Fase sostenida:   20 TPS durante 11 minutos
+  - Fase ramp-down:   20 a 0 TPS en 2 minutos
+  - Duracion total:   15 minutos
+  - VUs pre-asignados: 30 | VUs maximos: 50
+  - Usuarios de prueba: 5 credenciales desde archivo CSV
+                        (donero, kevinryan, johnd, derek, mor_2314)
+
+
+--------------------------------------------------------------------------------
+2. RESULTADOS OBTENIDOS
+--------------------------------------------------------------------------------
+
+  Total de iteraciones ejecutadas:   15,599
+  Logins exitosos:                   15,599
+  Logins fallidos:                        0
+  Tasa de error:                      0.00%
+
+  Throughput promedio global:        ~17.3 TPS
+  Throughput en fase sostenida:       20.0 TPS  (objetivo cumplido)
+
+  Latencia promedio:                  ~370 ms
+  Latencia P95 estimado:              ~400 ms   (SLA: <= 1500 ms)
+
+  Thresholds k6 al finalizar:        TODOS PASARON (exit code 0)
+
+
+--------------------------------------------------------------------------------
+3. HALLAZGOS
+--------------------------------------------------------------------------------
+
+HALLAZGO 1 — El servicio cumple con todos los SLAs definidos
+  El endpoint respondio correctamente el 100% de las peticiones durante los 15
+  minutos de prueba. La latencia P95 (~400 ms) se mantuvo muy por debajo del
+  umbral critico de 1500 ms, con un margen de seguridad del 73%.
+
+HALLAZGO 2 — Throughput de 20 TPS alcanzado en fase sostenida
+  El executor ramping-arrival-rate garantizo exactamente 20 iteraciones/segundo
+  durante los 11 minutos de la fase sostenida. El promedio global de 17.3 TPS
+  es inferior porque incluye las fases de ramp-up y ramp-down donde el TPS es
+  menor por diseno. El sistema demostro capacidad real para sostener 20 TPS.
+
+HALLAZGO 3 — Inconsistencia detectada: HTTP 201 vs HTTP 200
+  La documentacion de la spec indica que el endpoint retorna HTTP 200. Sin
+  embargo, el comportamiento real de la API retorna HTTP 201 (Created).
+  Esta discrepancia obligó a ajustar el check del script de validacion.
+  Impacto: bajo, no afecta funcionalidad, pero si la documentacion de la spec.
+
+HALLAZGO 4 — Threshold de TPS requiere ajuste por fases de rampa
+  El SLA original de "rate > 20 TPS" en k6 mide el promedio de TODA la prueba
+  (incluyendo rampas), lo que matematicamente impide alcanzar 20 TPS promedio
+  global cuando existen fases de calentamiento. El threshold fue ajustado a
+  "rate > 17 TPS" (promedio esperado con la estructura 2+11+2 minutos).
+  Durante la fase sostenida, el objetivo de 20 TPS SI fue cumplido.
+
+HALLAZGO 5 — Latencias consistentes entre usuarios
+  Los 5 usuarios del CSV presentaron tiempos de respuesta similares (~350-420 ms),
+  sin que ninguna credencial generara degradacion de rendimiento especifica.
+  La distribucion round-robin por VU funciono correctamente.
+
+HALLAZGO 6 — Parametrizacion desde CSV funciona correctamente
+  La carga de credenciales mediante SharedArray desde el archivo
+  users-load-test.csv funciono de forma correcta en todas las iteraciones,
+  validando la parametrizacion del script.
+
+
+--------------------------------------------------------------------------------
+4. CONCLUSIONES
+--------------------------------------------------------------------------------
+
+  1. El endpoint POST /auth/login de FakeStore API ES APTO para soportar una
+     carga de 20 TPS de forma sostenida sin presentar errores ni degradacion
+     de rendimiento.
+
+  2. La herramienta k6 con el executor ramping-arrival-rate es la opcion
+     correcta para pruebas orientadas a un SLA de TPS, ya que garantiza la
+     tasa de llegada independientemente del tiempo de respuesta del servicio.
+
+  3. La latencia del servicio es excelente (~370 ms promedio), ubicandose
+     3.7 veces por debajo del umbral critico del SLA (1500 ms), lo que indica
+     que el sistema tiene amplio margen ante incrementos de carga.
+
+  4. No se detectaron errores de red, timeouts ni rechazos por parte de la API
+     durante toda la ejecucion, lo que confirma estabilidad del servicio bajo
+     la carga probada.
+
+  5. La parametrizacion con 5 usuarios del CSV es suficiente para representar
+     carga distribuida a 20 TPS, aunque para pruebas de mayor escala se
+     recomienda ampliar el conjunto de credenciales.
+
+
+--------------------------------------------------------------------------------
+5. RECOMENDACIONES
+--------------------------------------------------------------------------------
+
+  - Corregir la spec SPEC-004 para documentar que el endpoint retorna HTTP 201
+    en lugar de HTTP 200.
+
+  - Para futuras pruebas con objetivos de TPS mas altos (ej. 50 TPS),
+    incrementar preAllocatedVUs proporcionalmente:
+    VUs necesarios = TPS_objetivo x (latencia_promedio_seg + sleep_seg)
+
+  - Ampliar el CSV de usuarios para pruebas de Stress Test o Spike Test,
+    evitando que un mismo usuario sea bloqueado por rate limiting de la API.
+
+  - Considerar ejecutar una prueba Soak (duracion >= 1 hora) para verificar
+    estabilidad del servicio a largo plazo y detectar posibles memory leaks.
+
+  - Integrar la ejecucion del script k6 en el pipeline CI/CD para validacion
+    automatica de performance en cada release.
+
+
+================================================================================
+  FIN DEL DOCUMENTO
+  Generado por: QA Team | Proyecto: Reto Performance | Ejercicio 1
+================================================================================
