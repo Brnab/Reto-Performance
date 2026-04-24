@@ -286,57 +286,7 @@ RESULTADO GENERAL: ✅ VERDE — Todos los SLAs cumplidos (exit code 0)
    ✓ Errores significativos observados
    ✓ Recomendaciones para mejora
 
-================================================================================
-                         PASO 5: INFORME DE ANÁLISIS
-================================================================================
 
-EJERCICIO 2: Analizar Resultados
-
-1. USAR DATOS DE EJEMPLO:
-   
-   Los datos de ejemplo (140 VUs, 73.17 TPS, etc.) están incluidos en:
-   - .github/specs/performance-load-testing.spec.md
-   - docs/output/qa/Informe_Resultados.md
-
-2. GENERAR INFORME FORMAL:
-   
-   El archivo Informe_Resultados.md contiene:
-   ✓ Tabla de resultados observados
-   ✓ Matriz Esperado vs Observado
-   ✓ Análisis de errores (4xx vs 5xx)
-   ✓ Interpretación de diagrama VUs-TPS
-   ✓ Hallazgos y recomendaciones
-
-3. CONVERTIR A .DOCX (Word):
-   
-   Opción A: Copiar contenido a Microsoft Word y formatear
-   Opción B: Usar pandoc (si está instalado):
-     pandoc -f markdown -t docx -o Informe_Resultados.docx Informe_Resultados.md
-   
-   Opción C: Usar Google Docs
-     1. Copiar contenido markdown a Google Docs
-     2. Formatear: títulos, colores, tablas
-     3. Exportar como .docx
-
-4. ESTRUCTURA DEL INFORME:
-   
-   - Portada (título, fecha, versión)
-   - Tabla de contenidos
-   - Resumen ejecutivo (1 página)
-   - Resultados observados (tablas + gráficos)
-   - Análisis cumplimiento SLA
-   - Interpretación VUs vs TPS
-   - Clasificación de errores
-   - Hallazgos clave (5-10 puntos)
-   - Recomendaciones priorizado
-   - Próximos pasos
-   - Conclusiones y sign-off
-
-5. GUARDAR ARCHIVOS ENTREGABLES:
-   
-   - Informe_Resultados.docx (análisis formal)
-   - Informe_Resultados.pdf (exportación)
-   - Datos_Brutos.csv (tabla de resultados)
 
 ================================================================================
                          TROUBLESHOOTING
@@ -378,82 +328,7 @@ SOLUCIÓN:
 - Ejecutar en horario diferente (menos carga)
 - Usar máquina con mejor conexión
 
-================================================================================
-                        EJECUCIÓN RECOMENDADA
-================================================================================
 
-PLAN DE TESTING (4 SEMANAS):
-
-SEMANA 1: Load Testing
-- [ ] Ejecutar load-test-login.js (15 min, 20 VUs)
-- [ ] Capturar summary.json y report.html
-- [ ] Generar conclusiones.md
-- [ ] Analizar resultados
-
-SEMANA 2: Análisis
-- [ ] Crear Informe_Resultados.md
-- [ ] Convertir a .docx (Word)
-- [ ] Recopilar datos brutos (CSV)
-- [ ] Sign-off del informe
-
-SEMANA 3: Ejecuciones Adicionales
-- [ ] Stress Test (escalar hasta punto de quiebre)
-- [ ] Soak Test (2 horas para detectar memory leaks)
-- [ ] Comparar contra baseline
-
-SEMANA 4: Documentación Final
-- [ ] Generar reporte ejecutivo
-- [ ] Crear dashboard de métricas
-- [ ] Documentar SLAs en contratos
-- [ ] Presentar hallazgos a equipo
-
-================================================================================
-                          ARCHIVOS ENTREGABLES
-================================================================================
-
-EJERCICIO 1 - Load Testing:
-
-📄 load-test-login.js
-   Ubicación: src/test/performance/
-   Tipo: JavaScript (k6 script)
-   Descripción: Script ejecutable para prueba de carga
-
-📄 users-load-test.csv
-   Ubicación: src/test/resources/data/
-   Tipo: CSV
-   Descripción: Datos de prueba (5 usuarios)
-
-📊 summary.json
-   Ubicación: docs/output/qa/
-   Tipo: JSON
-   Descripción: Resumen de métricas (generado en ejecución)
-
-📊 report.html
-   Ubicación: docs/output/qa/
-   Tipo: HTML
-   Descripción: Reporte visual interactivo (generado en ejecución)
-
-📝 conclusiones.md
-   Ubicación: docs/output/qa/
-   Tipo: Markdown
-   Descripción: Análisis y hallazgos de la prueba
-
-EJERCICIO 2 - Análisis:
-
-📄 Informe_Resultados.docx
-   Ubicación: docs/output/qa/
-   Tipo: Word
-   Descripción: Informe formal con análisis completo
-
-📄 Informe_Resultados.pdf
-   Ubicación: docs/output/qa/
-   Tipo: PDF
-   Descripción: Exportación para archivado
-
-📊 Datos_Brutos.csv
-   Ubicación: docs/output/qa/
-   Tipo: CSV
-   Descripción: Tabla de resultados detallados
 
 ================================================================================
                         CONTATOS Y SOPORTE
@@ -469,14 +344,3 @@ CONTACTOS:
 - DevOps:   devops@company.com
 - Lead:     tech-lead@company.com
 
-================================================================================
-
-                    ✅ GUÍA COMPLETADA
-
-        Para más información, consultar SPEC-004 en
-        .github/specs/performance-load-testing.spec.md
-
-================================================================================
-Versión: 2.0
-Última actualización: 2026-04-19
-Estado: APROBADO PARA USO — Ejecución validada con exit code 0
